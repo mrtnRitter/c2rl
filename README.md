@@ -6,7 +6,7 @@ Dieses Tool automatisiert die Überwachung und das Zurücksetzen von Lizenzen im
 
 >- Download aktuellen Release an beliebigen Speicherort
 >- c2rl.exe starten
->- in config.ini Tennant ID ergänzen (...codetwo.com/dashboard/tenants/**TENANT ID**/licenses)
+>- in config.ini Tennant ID ergänzen (...codetwo.com/dashboard/tenants/**TENANT ID**)
 >- c2rl.exe nochmals starten
 
 ---
@@ -43,12 +43,12 @@ Die Datei config.ini steuert das Verhalten des Skripts. Sie enthält folgende Ei
 
 | Name                | Beschreibung                                                                                                |
 |---------------------|------------------------------------------------------------------------------------------------------------ |
-| `tenant`            | ID aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses                          |
+| `tenant`            | ID aus URL ...codetwo.com/dashboard/tenants/**TENANT ID** - manuel eintragen                                |
 | `user_data_dir`     | Pfad zum Chrome-Benutzerprofil-Ordner - wird automatisch gesetzt.                                           |
 | `profile_dir`       | Name des Chrome-Profils bestehenden Login - wird automatisch gesetzt.                                       |
 | `discover_timeout`  | Zeit in Sekunden, wie lange auf das Laden von Elementen im Browser gewartet wird.                           |
 | `watchdog_timeout`  | Intervall in Sekunden, wie oft die Lizenzüberwachung ausgeführt wird.                                       |
-| `debug`             | `True` für Fenstermodus, `False` für fensterlosen Hintergrundmodus                                          |
+| `debug`             | `True` für Fenstermodus, `False` für fensterlosen Hintergrundmodus (Standard)                               |
 
 > **Hinweis:**  
 > config.ini wird beim ersten Start automatisch erstellt und kann nachträglich angepasst werden.  
