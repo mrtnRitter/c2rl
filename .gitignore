@@ -1,0 +1,7 @@
+/build/
+/ico/
+/dist/
+/script/c2rl_log.log
+/script/config.ini
+c2rl.spec
+pyinstaller.txt
