@@ -1,15 +1,15 @@
 ## Codetwo License Reset (c2rl)
 
-Dieses Skript automatisiert die Überwachung und das Zurücksetzen von Lizenzen im Codetwo Email Signatures 365 Dashboard.
+Dieses Tool automatisiert die Überwachung und das Zurücksetzen von Lizenzen im Codetwo Email Signatures 365 Dashboard.
 
 <br>
 
 >- Download aktuellen Release an beliebigen Speicherort
 >- c2rl.exe starten
->- in config.ini Tennant ID ergänzen (aus URL emailsignatures365.codetwo.com/dashboard/tenants/TENANT ID/licenses)
+>- in config.ini Tennant ID ergänzen (aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses)
 >- c2rl.exe nochmals starten
 
-<br>
+---
 
 Es läuft **nur unter Windows** als autostart Tray-Anwendung mit folgenden Hauptfunktionen:
 
@@ -41,14 +41,14 @@ Es läuft **nur unter Windows** als autostart Tray-Anwendung mit folgenden Haupt
 
 Die Datei config.ini steuert das Verhalten des Skripts. Sie enthält folgende Einstellungen:
 
-| Name                | Beschreibung                                                                                   |
-|---------------------|----------------------------------------------------------------------------------------------- |
-| `target_url`        | Die URL zum Codetwo-Lizenz-Dashboard, das überwacht und automatisiert werden soll.             |
-| `user_data_dir`     | Pfad zum Chrome-Benutzerprofil-Ordner - wird automatisch gesetzt.                              |
-| `profile_dir`       | Name des Chrome-Profils bestehenden Login - wird automatisch gesetzt.                          |
-| `discover_timeout`  | Zeit in Sekunden, wie lange auf das Laden von Elementen im Browser gewartet wird.              |
-| `watchdog_timeout`  | Intervall in Sekunden, wie oft die Lizenzüberwachung ausgeführt wird.                          |
-| `debug`             | `True` für Fenstermodus, `False` für fensterlosen Hintergrundmodus                             |
+| Name                | Beschreibung                                                                                                |
+|---------------------|------------------------------------------------------------------------------------------------------------ |
+| `tenant`            | ID aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses - manuel eintragen       |
+| `user_data_dir`     | Pfad zum Chrome-Benutzerprofil-Ordner - wird automatisch gesetzt.                                           |
+| `profile_dir`       | Name des Chrome-Profils bestehenden Login - wird automatisch gesetzt.                                       |
+| `discover_timeout`  | Zeit in Sekunden, wie lange auf das Laden von Elementen im Browser gewartet wird.                           |
+| `watchdog_timeout`  | Intervall in Sekunden, wie oft die Lizenzüberwachung ausgeführt wird.                                       |
+| `debug`             | `True` für Fenstermodus, `False` für fensterlosen Hintergrundmodus                                          |
 
 > **Hinweis:**  
 > config.ini wird beim ersten Start automatisch erstellt und kann nachträglich angepasst werden.  
