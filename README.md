@@ -6,7 +6,7 @@ Dieses Tool automatisiert die Überwachung und das Zurücksetzen von Lizenzen im
 
 >- Download aktuellen Release an beliebigen Speicherort
 >- c2rl.exe starten
->- in config.ini Tennant ID ergänzen (aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses)
+>- in config.ini Tennant ID ergänzen (...codetwo.com/dashboard/tenants/**TENANT ID**/licenses)
 >- c2rl.exe nochmals starten
 
 ---
