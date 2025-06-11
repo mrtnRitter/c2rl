@@ -43,7 +43,7 @@ Die Datei config.ini steuert das Verhalten des Skripts. Sie enthält folgende Ei
 
 | Name                | Beschreibung                                                                                                |
 |---------------------|------------------------------------------------------------------------------------------------------------ |
-| `tenant`            | ID aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses - manuel eintragen       |
+| `tenant`            | ID aus URL emailsignatures365.codetwo.com/dashboard/tenants/**TENANT ID**/licenses                          |
 | `user_data_dir`     | Pfad zum Chrome-Benutzerprofil-Ordner - wird automatisch gesetzt.                                           |
 | `profile_dir`       | Name des Chrome-Profils bestehenden Login - wird automatisch gesetzt.                                       |
 | `discover_timeout`  | Zeit in Sekunden, wie lange auf das Laden von Elementen im Browser gewartet wird.                           |
