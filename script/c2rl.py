@@ -502,8 +502,8 @@ def build_menu():
 # ------------- MAIN -------------
 if __name__ == "__main__":
 
-    ico_default = resource_path("script/res/ico_default.ico")
-    ico_error = resource_path("script/res/ico_error.ico")
+    ico_default = resource_path("res/ico_default.ico")
+    ico_error = resource_path("res/ico_error.ico")
 
     init()
     app = pystray.Icon(app_description, Image.open(ico_default), app_description + " " + app_version, build_menu())
