@@ -259,7 +259,9 @@ def auto_login():
         
     except Exception as e:
         logging.error("Auto login failed: " + str(e).splitlines()[0])
-        return False
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        driver.save_screenshot(os.path.join(base_path, f"auto_login_{timestamp}.png"))
+    return False
 
 
 
@@ -452,7 +454,8 @@ def license_watchdog(app):
                     set_tray_icon(app, "default")
                     app_status = "default"
 
-                time.sleep(watchdog_timeout)
+                sleep_time = min(watchdog_timeout, timeout_seconds)
+                time.sleep(sleep_time)
 
             elif auto_login():
                 time.sleep(discover_timeout)
