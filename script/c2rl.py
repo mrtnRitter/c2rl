@@ -24,7 +24,7 @@ import win32com.client
 # ------------- GLOBALS -------------
 app_name = "c2rl"
 app_description = "Codetwo License Reset"
-app_version = "v1.0"
+app_version = "v1.1"
 app_author = "https://github.com/mrtnRitter"
 
 driver = None
