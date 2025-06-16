@@ -297,6 +297,7 @@ def get_menu_license_str():
     lic_usage = "N/A"
     
     try:
+        driver.refresh()
         lic_usage = driver.find_element(By.TAG_NAME, "dd").text
         menu_license_str = f"Lizenzen: {lic_usage}"
         logging.info(f"{menu_license_str} currenently in use.")
