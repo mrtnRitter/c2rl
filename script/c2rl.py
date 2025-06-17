@@ -18,6 +18,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import math
 import win32com.client
+import random
 
 
 
@@ -317,6 +318,7 @@ def reset_license_counter():
     
     try:
         driver.refresh()
+        time.sleep(watchdog_timeout)
         btns = driver.find_elements(By.CSS_SELECTOR, "button.c2-button.c2-button--solid")
         for btn in btns:
             if btn.find_element(By.TAG_NAME, "span").get_attribute("outerHTML") == '<span class="display-contents">Reset license count (signature)</span>':
@@ -356,7 +358,7 @@ def get_timeout_seconds():
 
                 last_reset_date = berlin_dt.strftime("%d.%m.%Y")
                 last_reset_time = berlin_dt.strftime("%H:%M")
-                timeout_seconds = int(math.ceil(((berlin_dt + timedelta(hours=24)) - datetime.now(ZoneInfo("Europe/Berlin"))).total_seconds())) + 60
+                timeout_seconds = int(math.ceil(((berlin_dt + timedelta(hours=24)) - datetime.now(ZoneInfo("Europe/Berlin"))).total_seconds())) + random.randint(60, 180)
                 driver.find_element(By.CLASS_NAME, "c2-dlg-button ").click()
 
                 logging.info(f"Last reset was: {last_reset_date}, at: {last_reset_time}, reset locked for: {timeout_seconds} seconds.")
