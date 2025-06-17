@@ -299,7 +299,9 @@ def get_menu_license_str():
     
     try:
         driver.refresh()
+        time.sleep(discover_timeout)
         lic_usage = driver.find_element(By.TAG_NAME, "dd").text
+        print(lic_usage)
         menu_license_str = f"Lizenzen: {lic_usage}"
         logging.info(f"{menu_license_str} currenently in use.")
         return True
