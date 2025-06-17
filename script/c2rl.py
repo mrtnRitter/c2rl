@@ -318,7 +318,7 @@ def reset_license_counter():
     
     try:
         driver.refresh()
-        time.sleep(watchdog_timeout)
+        time.sleep(discover_timeout)
         btns = driver.find_elements(By.CSS_SELECTOR, "button.c2-button.c2-button--solid")
         for btn in btns:
             if btn.find_element(By.TAG_NAME, "span").get_attribute("outerHTML") == '<span class="display-contents">Reset license count (signature)</span>':
