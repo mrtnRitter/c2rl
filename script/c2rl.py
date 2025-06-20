@@ -301,7 +301,6 @@ def get_menu_license_str():
         driver.refresh()
         time.sleep(discover_timeout)
         lic_usage = driver.find_element(By.TAG_NAME, "dd").text
-        print(lic_usage)
         menu_license_str = f"Lizenzen: {lic_usage}"
         logging.info(f"{menu_license_str} currenently in use.")
         return True
@@ -472,6 +471,26 @@ def license_watchdog(app):
 
 
 
+def selfcheck():
+    """
+    Selfcheck thread to monitor the app status.
+    """
+    while True:
+        logging.info("Selfcheck still running...")
+        
+        if not timeout_and_reset_t.is_alive():
+            logging.error("timeout_and_reset_t died!")
+
+        if not license_watchdog_t.is_alive():
+            logging.error("license_watchdog_t died!")
+
+        time.sleep(60)
+
+
+
+
+
+
 # -------- UI FUNCTIONS -------------
 
 def set_tray_icon(app, status):
@@ -522,4 +541,23 @@ if __name__ == "__main__":
     license_watchdog_t = threading.Thread(target=license_watchdog, args=(app,), daemon=True)
     license_watchdog_t.start()
 
+    selfcheck_t = threading.Thread(target=selfcheck, daemon=True)
+    selfcheck_t.start()
+
     app.run()
+
+
+
+
+
+    # fix thread die on hibernate
+
+    # def restart_app():
+    #     exe = sys.executable
+    #     args = sys.argv
+    #     # Für eine EXE:
+    #     subprocess.Popen([exe] + args)
+    #     # Für ein Skript (wenn als .py gestartet):
+    #     # subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
+    #     sys.exit()
+
