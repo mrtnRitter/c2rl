@@ -26,7 +26,7 @@ import subprocess
 # ------------- GLOBALS -------------
 app_name = "c2rl"
 app_description = "Codetwo License Reset"
-app_version = "v1.1"
+app_version = "v1.2"
 app_author = "https://github.com/mrtnRitter"
 
 driver = None
@@ -453,7 +453,7 @@ def license_watchdog(app):
                 if in_use >= total-1 and app_status == "default":
                     set_tray_icon(app, "error")
                     app_status = "error"
-                    logging.warning(f"Licenses exceeded: {menu_license_str} - auto reset might not be working!")
+                    logging.warning(f"Licenses exceeded: {menu_license_str} - auto reset might not failed!")
 
                 elif in_use < total-1 and app_status == "error":
                     set_tray_icon(app, "default")
