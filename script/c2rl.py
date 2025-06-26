@@ -19,6 +19,7 @@ from logging.handlers import RotatingFileHandler
 import math
 import win32com.client
 import random
+import subprocess
 
 
 
@@ -473,21 +474,21 @@ def license_watchdog(app):
 
 def selfcheck():
     """
-    Selfcheck thread to monitor the app status.
+    Selfcheck thread to monitor the app status and restart if necessary.
     """
     while True:
-        logging.info("Selfcheck still running...")
-        
-        if not timeout_and_reset_t.is_alive():
-            logging.error("timeout_and_reset_t died!")
-
-        if not license_watchdog_t.is_alive():
-            logging.error("license_watchdog_t died!")
+        for thread in threading.enumerate():
+            if not thread.is_alive():
+                logging.error(f"{thread} died! Restarting the app...")
+                exe = sys.executable
+                args = sys.argv
+                if getattr(sys, 'frozen', False):
+                    subprocess.Popen([exe] + args)
+                else:
+                    subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
+                sys.exit()
 
         time.sleep(60)
-
-
-
 
 
 
@@ -545,19 +546,3 @@ if __name__ == "__main__":
     selfcheck_t.start()
 
     app.run()
-
-
-
-
-
-    # fix thread die on hibernate
-
-    # def restart_app():
-    #     exe = sys.executable
-    #     args = sys.argv
-    #     # Für eine EXE:
-    #     subprocess.Popen([exe] + args)
-    #     # Für ein Skript (wenn als .py gestartet):
-    #     # subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
-    #     sys.exit()
-
