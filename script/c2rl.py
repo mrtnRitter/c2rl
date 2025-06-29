@@ -472,13 +472,16 @@ def license_watchdog(app):
 
 
 
-def selfcheck():
+def selfcheck(app):
     """
     Selfcheck thread to monitor the app status and restart if necessary.
     """
     while True:
+        time.sleep(60)
         for thread in threading.enumerate():
-            if not thread.is_alive():
+            if thread.is_alive():
+                logging.info(f"{thread} is alive.")
+            else:
                 logging.error(f"{thread} died! Restarting the app...")
                 exe = sys.executable
                 args = sys.argv
@@ -486,9 +489,7 @@ def selfcheck():
                     subprocess.Popen([exe] + args)
                 else:
                     subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
-                sys.exit()
-
-        time.sleep(60)
+                app.quit()
 
 
 
@@ -542,7 +543,7 @@ if __name__ == "__main__":
     license_watchdog_t = threading.Thread(target=license_watchdog, args=(app,), daemon=True)
     license_watchdog_t.start()
 
-    selfcheck_t = threading.Thread(target=selfcheck, daemon=True)
+    selfcheck_t = threading.Thread(target=selfcheck, args=(app,), daemon=True)
     selfcheck_t.start()
 
     app.run()
