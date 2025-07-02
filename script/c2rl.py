@@ -478,18 +478,18 @@ def selfcheck(app):
     """
     while True:
         time.sleep(60)
-        for thread in threading.enumerate():
-            if thread.is_alive():
-                logging.info(f"{thread} is alive.")
+
+        if not timeout_and_reset_t.is_alive() or not license_watchdog_t.is_alive():
+            logging.error("Thread died! Restarting app...")
+            exe = sys.executable
+            args = sys.argv
+            if getattr(sys, 'frozen', False):
+                subprocess.Popen([exe] + args)
             else:
-                logging.error(f"{thread} died! Restarting the app...")
-                exe = sys.executable
-                args = sys.argv
-                if getattr(sys, 'frozen', False):
-                    subprocess.Popen([exe] + args)
-                else:
-                    subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
-                app.quit()
+                subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
+            app.quit()
+
+                
 
 
 
