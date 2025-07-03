@@ -20,13 +20,14 @@ import math
 import win32com.client
 import random
 import subprocess
+import ctypes
 
 
 
 # ------------- GLOBALS -------------
 app_name = "c2rl"
 app_description = "Codetwo License Reset"
-app_version = "v1.2"
+app_version = "v1.3"
 app_author = "https://github.com/mrtnRitter"
 
 driver = None
@@ -216,9 +217,16 @@ def setup_driver(headless):
     """
     Setup the Chrome driver with options.
     """
+    global driver
+    
+    if not internet_available():
+        return False
+
+    if driver:
+        return True
+    
     logging.info("Setting up browser...")
     
-    global driver
     options = Options()
 
     if debug:
@@ -245,6 +253,7 @@ def setup_driver(headless):
     driver.get(target_url)
     time.sleep(discover_timeout)
     logging.info("Browser ready.")
+    return True
 
 
 
@@ -252,6 +261,9 @@ def auto_login():
     """
     Fullfil login procedure.
     """
+    if not internet_available():
+        return False
+    
     logging.info("Attempting to auto login...")
     try:
         driver.find_element(By.ID, "AzureADCommonSigninExchange").click()
@@ -276,20 +288,23 @@ def manual_login():
         driver.quit()
         driver = None
     
-    setup_driver(headless=False)
-    logging.info("Open Browser and waiting for user to manual login...")
+    if not internet_available():
+        return False
+    
+    if setup_driver(headless=False):
+        logging.info("Open Browser and waiting for user to manual login...")
 
-    while True:
-        try:
-            driver.title
-            time.sleep(discover_timeout)
-        except WebDriverException:
-            driver = None
-            break
+        while True:
+            try:
+                driver.title
+                time.sleep(discover_timeout)
+            except WebDriverException:
+                driver = None
+                break
 
 
 
-def get_menu_license_str():
+def get_menu_license_str(app):
     """
     Get the license count from the page.
     """
@@ -297,18 +312,25 @@ def get_menu_license_str():
 
     global menu_license_str
     lic_usage = "N/A"
-    
-    try:
-        driver.refresh()
-        time.sleep(discover_timeout)
-        lic_usage = driver.find_element(By.TAG_NAME, "dd").text
-        menu_license_str = f"Lizenzen: {lic_usage}"
-        logging.info(f"{menu_license_str} currenently in use.")
-        return True
 
-    except NoSuchElementException as e:
-        logging.error("License counter not found: " + str(e).splitlines()[0])
-        return False
+    if not internet_available():
+        result = False
+    
+    else:
+        try:
+            driver.refresh()
+            time.sleep(discover_timeout)
+            lic_usage = driver.find_element(By.TAG_NAME, "dd").text
+            result = True
+        
+        except NoSuchElementException as e:
+            logging.error("License counter not found: " + str(e).splitlines()[0])
+            result = False
+
+    menu_license_str = f"Lizenzen: {lic_usage}"
+    app.menu = build_menu()
+    logging.info(f"{menu_license_str} currenently in use.")
+    return result
 
 
 
@@ -316,6 +338,9 @@ def reset_license_counter():
     """
     Reset the license count.
     """
+    if not internet_available():
+        return False
+
     logging.info("Attempting to click license reset button...")
     
     try:
@@ -345,6 +370,9 @@ def get_timeout_seconds():
     logging.info("Attempting to fetch reset lock timeout...")
     
     global timeout_seconds
+
+    if not internet_available():
+        return False
     
     try:
         msg = driver.find_element(By.CLASS_NAME, "c2-message-text").text
@@ -417,23 +445,21 @@ def timeout_and_reset(app):
     Handles license reset, reset lock timeout and updates the UI.
     """
     while True:
-        if not driver:
-            setup_driver(headless=True)
+        if setup_driver(headless=True):
+            if reset_license_counter():
+                if get_timeout_seconds():
+                    update_reset_lock_timeout(app)
 
-        if reset_license_counter():
-            if get_timeout_seconds():
-                update_reset_lock_timeout(app)
-
-        elif auto_login():
-            time.sleep(discover_timeout)
-            pass
-                
-        else:
-            manual_login()
+            elif auto_login():
+                time.sleep(discover_timeout)
+                continue
+                    
+            else:
+                manual_login()
 
         time.sleep(discover_timeout)
 
-        
+
 
 def license_watchdog(app):
     """
@@ -443,32 +469,57 @@ def license_watchdog(app):
 
     while True:
         while timeout_seconds > 60:
-            if not driver:
-                setup_driver(headless=True)
+            if setup_driver(headless=True):
+                if get_menu_license_str(app):
+                    in_use, total = map(int, menu_license_str.split(":")[1].strip().split("/"))
+                    if in_use >= total-1 and app_status == "default":
+                        set_tray_icon(app, "error")
+                        app_status = "error"
+                        logging.warning(f"Licenses exceeded: {menu_license_str} - auto reset might failed!")
 
-            if get_menu_license_str():
-                app.menu = build_menu()
+                    elif in_use < total-1 and app_status == "error":
+                        set_tray_icon(app, "default")
+                        app_status = "default"
 
-                in_use, total = map(int, menu_license_str.split(":")[1].strip().split("/"))
-                if in_use >= total-1 and app_status == "default":
-                    set_tray_icon(app, "error")
-                    app_status = "error"
-                    logging.warning(f"Licenses exceeded: {menu_license_str} - auto reset might not failed!")
+                    sleep_time = min(watchdog_timeout, timeout_seconds)
+                    time.sleep(sleep_time)
 
-                elif in_use < total-1 and app_status == "error":
-                    set_tray_icon(app, "default")
-                    app_status = "default"
-
-                sleep_time = min(watchdog_timeout, timeout_seconds)
-                time.sleep(sleep_time)
-
-            elif auto_login():
-                time.sleep(discover_timeout)
-           
-            else:
-                manual_login()
+                elif auto_login():
+                    time.sleep(discover_timeout)
+                    continue
+            
+                else:
+                    manual_login()
         
         time.sleep(discover_timeout)
+
+
+
+def internet_available(app):
+    """
+    Check if the internet connection is available.
+    """
+    global driver
+    
+    if ctypes.windll.wininet.InternetGetConnectedState(0, 0) == 0:
+        logging.warning("Internet connection is not available.")
+
+        if driver:
+            driver.quit()
+            driver = None
+
+        if app_status == "default":      
+            set_tray_icon(app, "error")
+            app_status = "error"
+
+        return False
+    
+    else:
+        if app_status == "error":
+            set_tray_icon(app, "default")
+            app_status = "default"
+
+        return True
 
 
 
@@ -487,9 +538,9 @@ def selfcheck(app):
                 subprocess.Popen([exe] + args)
             else:
                 subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
-            app.quit()
+            app.stop()
+            exit()
 
-                
 
 
 
