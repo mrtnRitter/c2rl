@@ -501,17 +501,28 @@ def internet_available():
     Check if the internet connection is available.
     """
     global driver
-    
+    global app_status
+    global app
+        
     if ctypes.windll.wininet.InternetGetConnectedState(0, 0) == 0:
         logging.warning("Internet connection is not available.")
 
         if driver:
             driver.quit()
             driver = None
-        
+
+        if app_status == "default":      
+            set_tray_icon(app, "error")
+            app_status = "error"
+
         return False
     
-    return True
+    else:
+        if app_status == "error":
+            set_tray_icon(app, "default")
+            app_status = "default"
+
+        return True
 
 
 
