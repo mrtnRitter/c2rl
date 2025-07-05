@@ -219,11 +219,11 @@ def setup_driver(headless):
     """
     global driver
     
-    if not internet_available():
-        return False
-
     if driver:
         return True
+    
+    if not internet_available():
+        return False
     
     logging.info("Setting up browser...")
     
@@ -490,12 +490,13 @@ def license_watchdog(app):
             
                 else:
                     manual_login()
-        
+            
+            time.sleep(discover_timeout)
         time.sleep(discover_timeout)
 
 
 
-def internet_available(app):
+def internet_available():   
     """
     Check if the internet connection is available.
     """
@@ -507,19 +508,10 @@ def internet_available(app):
         if driver:
             driver.quit()
             driver = None
-
-        if app_status == "default":      
-            set_tray_icon(app, "error")
-            app_status = "error"
-
+        
         return False
     
-    else:
-        if app_status == "error":
-            set_tray_icon(app, "default")
-            app_status = "default"
-
-        return True
+    return True
 
 
 
