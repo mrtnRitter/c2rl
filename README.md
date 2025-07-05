@@ -37,7 +37,7 @@ Es läuft **nur unter Windows** als autostart Tray-Anwendung mit folgenden Haupt
 - **Einfache Bedienung:**  
   Über das Tray-Menü können Einstellungen, Infos und das Beenden der App aufgerufen werden.
 
-- **Robust:**
+- **Robust:** 
   Die App hat einen Selbstcheck und startet sich bei Fehlern neu. Bei einer fehlenden Internetverbindung bleibt die App aktiv und wartet, bis die Verbindung wieder besteht.
 
 ---
