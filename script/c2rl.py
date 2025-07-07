@@ -597,7 +597,7 @@ if __name__ == "__main__":
     license_watchdog_t = threading.Thread(target=license_watchdog, args=(app,), daemon=True)
     license_watchdog_t.start()
 
-    selfcheck_t = threading.Thread(target=selfcheck, args=(app,), daemon=True)
-    selfcheck_t.start()
+    # selfcheck_t = threading.Thread(target=selfcheck, args=(app,), daemon=True)
+    # selfcheck_t.start()
 
     app.run()
