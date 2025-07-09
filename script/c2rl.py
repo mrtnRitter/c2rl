@@ -413,7 +413,7 @@ def update_reset_lock_timeout(app):
     
     global timeout_seconds
     global menu_timeout_str
-    
+
     while timeout_seconds > 0:
         h, m = timeout_seconds // 3600, (timeout_seconds % 3600) // 60
 
@@ -435,8 +435,10 @@ def update_reset_lock_timeout(app):
         sleep_time = min(update_interval, timeout_seconds)  
         logging.info(f"Reset locked for: {timeout_seconds} seconds, next update in {sleep_time} seconds.")
 
+        time_before_sleep = time.time()
         time.sleep(sleep_time)
-        timeout_seconds -= sleep_time
+        time_after_sleep = time.time()
+        timeout_seconds -= sleep_time + (sleep_time - (time_after_sleep - time_before_sleep))
 
         
 
@@ -471,16 +473,6 @@ def license_watchdog(app):
         while timeout_seconds > 60:
             if setup_driver(headless=True):
                 if get_menu_license_str(app):
-                    in_use, total = map(int, menu_license_str.split(":")[1].strip().split("/"))
-                    if in_use >= total-1 and app_status == "default":
-                        set_tray_icon(app, "error")
-                        app_status = "error"
-                        logging.warning(f"Licenses exceeded: {menu_license_str} - auto reset might failed!")
-
-                    elif in_use < total-1 and app_status == "error":
-                        set_tray_icon(app, "default")
-                        app_status = "default"
-
                     sleep_time = min(watchdog_timeout, timeout_seconds)
                     time.sleep(sleep_time)
 
@@ -503,10 +495,10 @@ def internet_available():
     global driver
     global app_status
     global app
-        
+
     if ctypes.windll.wininet.InternetGetConnectedState(0, 0) == 0:
         logging.warning("Internet connection is not available.")
-
+        
         if driver:
             driver.quit()
             driver = None
@@ -523,27 +515,6 @@ def internet_available():
             app_status = "default"
 
         return True
-
-
-
-def selfcheck(app):
-    """
-    Selfcheck thread to monitor the app status and restart if necessary.
-    """
-    while True:
-        time.sleep(60)
-
-        if not timeout_and_reset_t.is_alive() or not license_watchdog_t.is_alive():
-            logging.error("Thread died! Restarting app...")
-            exe = sys.executable
-            args = sys.argv
-            if getattr(sys, 'frozen', False):
-                subprocess.Popen([exe] + args)
-            else:
-                subprocess.Popen([sys.executable, os.path.abspath(__file__)] + sys.argv[1:])
-            app.stop()
-            exit()
-
 
 
 
@@ -596,8 +567,5 @@ if __name__ == "__main__":
 
     license_watchdog_t = threading.Thread(target=license_watchdog, args=(app,), daemon=True)
     license_watchdog_t.start()
-
-    # selfcheck_t = threading.Thread(target=selfcheck, args=(app,), daemon=True)
-    # selfcheck_t.start()
 
     app.run()
