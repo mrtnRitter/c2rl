@@ -25,9 +25,6 @@ Es läuft **nur unter Windows** als autostart Tray-Anwendung mit folgenden Haupt
 - **Auto-Login & manuelles Login:**  
   Versucht automatisch, sich im Codetwo-Dashboard anzumelden. Falls dies fehlschlägt, wird ein manueller Login im Browser ermöglicht.
 
-- **Statusanzeige im System-Tray:**  
-  Das Tray-Icon signalisiert, wenn nur noch 2 Lizensen verfügbar sind.
-  
 - **Konfigurierbar:**  
   Einstellungen wie Ziel-URL, Zeitabstände und Debug-Modus werden über eine config.ini verwaltet.
 
@@ -38,7 +35,7 @@ Es läuft **nur unter Windows** als autostart Tray-Anwendung mit folgenden Haupt
   Über das Tray-Menü können Einstellungen, Infos und das Beenden der App aufgerufen werden.
 
 - **Robust:**  
-  Die App hat einen Selbstcheck und startet sich bei Fehlern neu. Bei einer fehlenden Internetverbindung bleibt die App aktiv und wartet, bis die Verbindung wieder besteht.
+  Bei einer fehlenden Internetverbindung bleibt die App aktiv und wartet, bis die Verbindung wieder besteht.
 
 ---
 
