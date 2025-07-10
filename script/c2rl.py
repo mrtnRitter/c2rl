@@ -435,9 +435,9 @@ def update_reset_lock_timeout(app):
         sleep_time = min(update_interval, timeout_seconds)  
         logging.info(f"Reset locked for: {timeout_seconds} seconds, next update in {sleep_time} seconds.")
 
-        time_before_sleep = time.time()
+        time_before_sleep = int(time.time())
         time.sleep(sleep_time)
-        time_after_sleep = time.time()
+        time_after_sleep = int(time.time())
         timeout_seconds -= sleep_time + (sleep_time - (time_after_sleep - time_before_sleep))
 
         
