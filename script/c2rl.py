@@ -220,7 +220,8 @@ def setup_driver(headless):
     global driver
     
     if driver:
-        return True
+        driver.quit()
+        driver = None
     
     if not internet_available():
         return False
@@ -275,7 +276,7 @@ def auto_login():
         logging.error("Auto login failed: " + str(e).splitlines()[0])
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         driver.save_screenshot(os.path.join(base_path, f"auto_login_{timestamp}.png"))
-    return False
+        return False
 
 
 
