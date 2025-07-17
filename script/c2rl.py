@@ -220,8 +220,12 @@ def setup_driver(headless):
     global driver
     
     if driver:
-        driver.quit()
-        driver = None
+        try:
+            driver.title
+        except Exception as e:
+            logging.error("Try driver, but: " + str(e).splitlines()[0])
+            # driver.quit()
+            # driver = None
     
     if not internet_available():
         return False
